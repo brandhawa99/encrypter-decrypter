@@ -34,7 +34,7 @@ func Encrypt(source string, password []byte) {
 		panic(err.Error())
 	}
 
-	dk := pbkdf2.Key(key, nonce, 4069, 32, sha1.New)
+	dk := pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
 	block, err := aes.NewCipher(dk)
 	if err != nil {
 		panic(err.Error())
@@ -63,7 +63,6 @@ func Encrypt(source string, password []byte) {
 
 func Decrypt(source string, password []byte) {
 	if _, err := os.Stat(source); os.IsExist(err) {
-
 		panic(err.Error())
 	}
 
@@ -82,6 +81,9 @@ func Decrypt(source string, password []byte) {
 	salt := cipheredText[len(cipheredText)-12:]
 	str := hex.EncodeToString(salt)
 	nonce, err := hex.DecodeString(str)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	dk := pbkdf2.Key(key, nonce, 4096, 32, sha1.New)
 
